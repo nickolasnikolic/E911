@@ -6,9 +6,6 @@ import android.os.Bundle;
 import android.content.Intent;
 import android.net.Uri;
 
-import app.akexorcist.bluetotohspp.library.BluetoothSPP;
-import app.akexorcist.bluetotohspp.library.BluetoothState;
-
 import android.app.AlertDialog;
 import android.view.View;
 import android.widget.Toast;
@@ -23,7 +20,8 @@ public class MainActivity extends AppCompatActivity {
     private UUID writeUUID = java.util.UUID.fromString("00001525-1212-EFDE-1523-785FEABCD123");
 
     private String phoneNumber;
-    private BluetoothSPP bt = null;
+
+    Thread bt = new BlueTooth("911_Enhanced", connectionUUID);
 
     public void callPhone(String number){
         //call phone number saved in class var
@@ -63,10 +61,9 @@ public class MainActivity extends AppCompatActivity {
     public void onStart() {
         super.onStart();
 
-        //open bt library
-        bt = new BluetoothSPP(this);
+        if (bt == null) {
+            // Device does not support Bluetooth
 
-        if(!bt.isBluetoothEnabled()) {
             // show alert if bt is disabled
             // 1. Instantiate an AlertDialog.Builder with its constructor
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -81,14 +78,12 @@ public class MainActivity extends AppCompatActivity {
 
         } else {
             //you have bluetooth, use it
-            Thread doBt = new AcceptThread("911_Enhanced", connectionUUID);
-            doBt.run();
+            bt.run();
         }
     }
 
     @Override
     public void onDestroy(){
         super.onDestroy();
-        bt.stopService();
     }
 }

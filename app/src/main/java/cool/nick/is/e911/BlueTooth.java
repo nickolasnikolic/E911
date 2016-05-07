@@ -1,5 +1,6 @@
 package cool.nick.is.e911;
 
+import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothServerSocket;
 import android.bluetooth.BluetoothSocket;
 import android.bluetooth.BluetoothAdapter;
@@ -10,7 +11,11 @@ import java.io.OutputStream;
 import java.util.UUID;
 
 
-public class AcceptThread extends Thread {
+public class BlueTooth extends Thread {
+
+    private String name = null;
+    private UUID myUuid = null;
+
     private final BluetoothServerSocket mmServerSocket;
     private final BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
 
@@ -28,9 +33,11 @@ public class AcceptThread extends Thread {
     };
 
 
-    public AcceptThread( String NAME, UUID MY_UUID) {
-        // Use a temporary object that is later assigned to mmServerSocket,
-        // because mmServerSocket is final
+    public BlueTooth( String NAME, UUID MY_UUID) {
+
+        name = NAME;
+        myUuid = MY_UUID;
+
         BluetoothServerSocket tmp = null;
         try {
             // MY_UUID is the app's UUID string, also used by the client code
@@ -39,16 +46,25 @@ public class AcceptThread extends Thread {
         mmServerSocket = tmp;
     }
 
-    private void manageConnectedSocket(){
+    private void manageConnectedSocket(BluetoothSocket mmSocket){
+        ;
+
+        mBluetoothAdapter.cancelDiscovery();
         byte[] message = new byte[1];
         int readThisToday;
 
+
         while(true){
             try{
+                mmSocket.connect();
+
                 // Read from the InputStream
                 readThisToday = mmInStream.read(message);
-                // Send the obtained bytes to the UI activity
-                mmOutStream.write(message);
+                //if you have received the 1 byte message
+                if(readThisToday == 0) {
+                    // Send the obtained bytes to the UI activity
+                    mmOutStream.write(message);
+                }
             }catch (IOException e){}
         }
 
@@ -66,7 +82,7 @@ public class AcceptThread extends Thread {
             // If a connection was accepted
             if (socket != null) {
                 // Do work to manage the connection (in a separate thread)
-                manageConnectedSocket();
+                manageConnectedSocket(socket);
                 try {
                     mmServerSocket.close();
                 }catch(IOException e){}
