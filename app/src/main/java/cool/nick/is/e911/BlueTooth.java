@@ -4,6 +4,10 @@ import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothServerSocket;
 import android.bluetooth.BluetoothSocket;
 import android.bluetooth.BluetoothAdapter;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.widget.Toast;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -16,6 +20,7 @@ public class BlueTooth extends Thread {
     private String name = null;
     private UUID myUuid = null;
 
+    private BluetoothDevice device = null;
     private final BluetoothServerSocket mmServerSocket;
     private final BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
 
@@ -33,7 +38,7 @@ public class BlueTooth extends Thread {
     };
 
 
-    public BlueTooth( String NAME, UUID MY_UUID) {
+    public BlueTooth( String NAME, UUID MY_UUID ) {
 
         name = NAME;
         myUuid = MY_UUID;
@@ -45,6 +50,21 @@ public class BlueTooth extends Thread {
         } catch (IOException e) { }
         mmServerSocket = tmp;
     }
+
+    // Create a BroadcastReceiver for ACTION_FOUND
+    private final BroadcastReceiver mReceiver = new BroadcastReceiver() {
+        public void onReceive(Context context, Intent intent) {
+            String action = intent.getAction();
+            // When discovery finds a device
+            if (BluetoothDevice.ACTION_FOUND.equals(action)) {
+                // Get the BluetoothDevice object from the Intent
+                device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
+                // Add the name and address to an array adapter to show in a ListView
+                Toast.makeText(context, "" + device.getName() + "\n" + device.getAddress(),
+                        Toast.LENGTH_LONG).show();
+            }
+        }
+    };
 
     private void manageConnectedSocket(BluetoothSocket mmSocket){
         ;
@@ -71,7 +91,7 @@ public class BlueTooth extends Thread {
     }
 
     public void run() {
-        BluetoothSocket socket = null;
+        BluetoothSocket socket;
         // Keep listening until exception occurs or a socket is returned
         while (true) {
             try {
