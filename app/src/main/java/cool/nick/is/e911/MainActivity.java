@@ -1,5 +1,6 @@
 package cool.nick.is.e911;
 
+import android.content.Context;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
@@ -20,8 +21,7 @@ public class MainActivity extends AppCompatActivity {
     private UUID writeUUID = java.util.UUID.fromString("00001525-1212-EFDE-1523-785FEABCD123");
 
     private String phoneNumber;
-
-    Thread bt = new BlueTooth("911_Enhanced", connectionUUID);
+    private Thread bt;
 
     public void callPhone(String number){
         //call phone number saved in class var
@@ -55,6 +55,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        bt = new BlueTooth("CA-50i", connectionUUID, "FC-58-FA-14-60-b6", getApplicationContext());
+
     }
 
     @Override

@@ -12,13 +12,16 @@ import android.widget.Toast;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.Set;
 import java.util.UUID;
+import java.lang.*;
 
 
 public class BlueTooth extends Thread {
 
     private String name = null;
     private UUID myUuid = null;
+    private String mac = null;
 
     private BluetoothDevice device = null;
     private final BluetoothServerSocket mmServerSocket;
@@ -38,10 +41,21 @@ public class BlueTooth extends Thread {
     };
 
 
-    public BlueTooth( String NAME, UUID MY_UUID ) {
+    public BlueTooth( String NAME, UUID MY_UUID, String macAddress, Context theContext ) {
 
         name = NAME;
         myUuid = MY_UUID;
+        mac = macAddress;
+
+        Set<BluetoothDevice> pairedDevices = mBluetoothAdapter.getBondedDevices();
+// If there are paired devices
+        if (pairedDevices.size() > 0) {
+            // Loop through paired devices
+            for (BluetoothDevice device : pairedDevices) {
+                // Add the name and address to an array adapter to show in a ListView
+                Toast.makeText(theContext, device.getName() + "\n" + device.getAddress(), Toast.LENGTH_LONG).show();
+            }
+        }
 
         BluetoothServerSocket tmp = null;
         try {
