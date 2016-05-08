@@ -18,6 +18,7 @@ public class MainActivity extends AppCompatActivity {
     private UUID connectionUUID = java.util.UUID.fromString("00001523-1212-EFDE-1523-785FEABCD123");
     private UUID notifyUUID = java.util.UUID.fromString("00001524-1212-EFDE-1523-785FEABCD123");
     private UUID writeUUID = java.util.UUID.fromString("00001525-1212-EFDE-1523-785FEABCD123");
+    private String macId = "";
 
     private String phoneNumber;
     private Thread bt = null;
@@ -54,7 +55,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        bt = new BlueTooth("CA-50i", connectionUUID, "FC-58-FA-14-60-b6", getApplicationContext());
+        bt = new BlueTooth("911_Enhanced", connectionUUID, getApplicationContext());
 
     }
 

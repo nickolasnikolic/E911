@@ -41,11 +41,10 @@ public class BlueTooth extends Thread {
     };
 
 
-    public BlueTooth( String NAME, UUID MY_UUID, String macAddress, Context theContext ) {
+    public BlueTooth( String NAME, UUID MY_UUID, Context theContext ) {
 
         name = NAME;
         myUuid = MY_UUID;
-        mac = macAddress;
 
         Set<BluetoothDevice> pairedDevices = mBluetoothAdapter.getBondedDevices();
 // If there are paired devices
@@ -104,6 +103,7 @@ public class BlueTooth extends Thread {
 
     }
 
+    @Override
     public void run() {
         BluetoothSocket socket;
         // Keep listening until exception occurs or a socket is returned
