@@ -1,6 +1,5 @@
 package cool.nick.is.e911;
 
-import android.content.Context;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
@@ -21,19 +20,19 @@ public class MainActivity extends AppCompatActivity {
     private UUID writeUUID = java.util.UUID.fromString("00001525-1212-EFDE-1523-785FEABCD123");
 
     private String phoneNumber;
-    private Thread bt;
+    private Thread bt = null;
 
     public void callPhone(String number){
         //call phone number saved in class var
         Intent callIntent = new Intent(Intent.ACTION_CALL);
-        callIntent.setData(Uri.parse("tel:"+phoneNumber));
+        callIntent.setData(Uri.parse("tel:" + number));
 
-        Toast.makeText(this, "calling " + phoneNumber,
+        Toast.makeText(getApplicationContext(), "calling " + number,
                 Toast.LENGTH_LONG).show();
         try {
             startActivity(callIntent);
         }catch(SecurityException e){
-            Toast.makeText(this, "NOT calling " + phoneNumber,
+            Toast.makeText(getApplicationContext(), "NOT calling " + number,
                     Toast.LENGTH_LONG).show();
         }
     }
